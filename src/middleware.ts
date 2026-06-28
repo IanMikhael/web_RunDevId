@@ -34,9 +34,11 @@ export async function middleware(request: NextRequest) {
 
   const url = request.nextUrl.clone();
 
-  // 4. Proteksi rute Dashboard
-  // Jika mencoba akses /dashboard tanpa login, arahkan ke /login
-  if (url.pathname.startsWith("/dashboard")) {
+// 4. Proteksi rute-rute utama yang membutuhkan login
+  // Kita tambahkan pengecekan untuk /projects atau folder lain yang butuh login
+  const isProtectedPath = url.pathname === "/projects" || url.pathname.startsWith("/dashboard");
+
+  if (isProtectedPath) {
     if (!user) {
       url.pathname = "/login";
       return NextResponse.redirect(url);
